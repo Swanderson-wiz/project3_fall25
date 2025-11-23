@@ -4,6 +4,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <string.h>
+#include <errno.h>
 
 #define N 12
 #define MAX_ARGS 21
@@ -66,12 +67,12 @@ int main() {
 
 		char *cmd = argv[0];
 
-		if (isAllowed(cmd_line) == 1) {
-			if(strcmp(cmd_line,"exit")==0) {
+		if (isAllowed(cmd) == 1) {
+			if(strcmp(cmd,"exit")==0) {
 				run = 0;
 				break;
 			//end exit if
-			} else if (strcmp(cmd_line,"help") == 0) {
+			} else if (strcmp(cmd,"help") == 0) {
 				printf("The allowed commands are:\n");	
 				size_t allowed_size = sizeof(allowed) / sizeof(allowed[0]);
 
@@ -79,7 +80,7 @@ int main() {
         				printf("%zu: %s\n", i+1, allowed[i]);
         			}//end print for
 			//end help if
-			} else if (strcmp(cmd_line,"cd") == 0) {
+			} else if (strcmp(cmd,"cd") == 0) {
 				if (argc > 2) {
 					printf("-rsh: cd: too many arguments\n");
 					//end check if
@@ -94,14 +95,14 @@ int main() {
 				}//end else
 			//end cd if
 			} else {
-				int spawn_result = posix_spawnp(&pid, cmd, NULL, NULL, argv environ);
+				int spawn_result = posix_spawnp(&pid, cmd, NULL, NULL, argv, environ);
 
 				if (spawn_result != 0) {
 					fprintf(stdout, "rsh: Error executing %s: %s\n", cmd, strerror(spawn_result));
 					//end spawnfail if
 				} else {
-					if (waitpid(pid, &status, 0) == -1 {
-						perror("waitpid failed";
+					if (waitpid(pid, &status, 0) == -1) {
+						perror("waitpid failed");
 					}//end wait if
 				}//end wait else
 			}//end spawn else
