@@ -108,7 +108,7 @@ int main() {
 			}//end spawn else
 
 		} else {
-			printf("NOT ALLOWED\n");
+			printf("NOT ALLOWED!\n");
 		}//end isAllowed if
 
 		// TODO
